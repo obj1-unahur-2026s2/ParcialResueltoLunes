@@ -1,0 +1,55 @@
+import juanita.*
+
+describe "Pruebas de Juanita R. Ebelde y la Red comunitaria UNAHUR" {
+
+  // Escenario común para los tests
+  const panopticoFisico = new EspacioDisciplinario(
+    duenio = donaldoPDF,
+    nivelExigenciaFisica = 30,
+    cantidadDePersonasDentro = 100
+  )
+
+  const redSocialDigital = new DispositivoDigital(
+    duenio = marcosZucaritas,
+    notificacionesDiarias = 10,
+    toxicidadBase = 20
+  )
+
+  const herramientaLibre = new HerramientaLibre()
+
+  method initialize() {
+    redComunitaria.registrarHerramientas([panopticoFisico, redSocialDigital, herramientaLibre])
+  }
+
+  test "La lista de herramientas totalitarias no está vacía" {
+    assert.notThat(redComunitaria.herramientasTotalitarias().isEmpty())
+  }
+
+  test "La lista de peligrosidades de la red es exactamente [130, 440, 0]" {
+    assert.equals([130, 440, 0], redComunitaria.listaDePeligrosidades())
+  }
+
+  test "Si se quita la herramienta libre de la red, la misma pasa a estar completamente alienada" {
+    redComunitaria.darDeBajaHerramientas([herramientaLibre])
+    assert.that(redComunitaria.redCompletamenteAlienada())
+  }
+
+  test "Si se agrega la app bélica, el nivel máximo de peligrosidad de la red es 3570" {
+    // Escenario particular preparado solo para este test:
+    const appBélica = new DispositivoDigital(
+      duenio = samAiMan,
+      notificacionesDiarias = 0,
+      toxicidadBase = 40
+    )
+    redComunitaria.registrarHerramientas([appBélica])
+
+    // Ejecución de uso masivo por 2 horas:
+    // appBélica: toxicidad = 30 (samAiMan) + 40 = 70. Notificaciones = 0 + 2*40 = 80 -> tope 50.
+    // Control appBélica = 50 * 70 = 3500. Peligrosidad = 3500 + 70 = 3570.
+    // redSocialDigital: toxicidad = 40. Notificaciones = 10 + 2*20 = 50 (tope 50).
+    // Control redSocialDigital = 50 * 40 = 2000. Peligrosidad = 2000 + 40 = 2040.
+    redComunitaria.registrarUsoParaTodas(2)
+
+    assert.equals(3570, redComunitaria.nivelMaximoDePeligrosidad())
+  }
+}
